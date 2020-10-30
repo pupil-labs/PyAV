@@ -11,6 +11,7 @@ from subprocess import Popen, PIPE
 import argparse
 import errno
 import os
+import pathlib
 import platform
 import re
 import shlex
@@ -484,6 +485,8 @@ class BuildExtCommand(build_ext):
         self.run_command('cythonize')
         build_ext.run(self)
 
+package_folders = pathlib.Path("av").glob("**/")
+package_data = {".".join(pckg.parts): ["*.pxd"] for pckg in package_folders}
 
 setup(
 
@@ -497,6 +500,7 @@ setup(
     url="https://github.com/PyAV-Org/PyAV",
 
     packages=find_packages(exclude=['build*', 'examples*', 'scratchpad*', 'tests*']),
+    package_data=package_data,
 
     zip_safe=False,
     ext_modules=ext_modules,
